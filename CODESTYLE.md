@@ -1,0 +1,61 @@
+# Code Style
+
+## Linter Rules
+
+Use golangci-lint with provided config and auto-fix all issues with it.
+
+## fx modules Rules
+
+All uber/fx related functions should be in `module.go` file in each package.
+
+Module declaration should be in packages `Module` function.
+
+Example:
+
+```go
+func Module() fx.Option {
+	return fx.Module("module_name",
+		fx.Provide(
+			NewService1,
+			NewService2,
+			...
+		),
+	)
+}
+```
+
+Module invokations should be in packages `Invoke` function.
+
+Example:
+
+```go
+func Invoke() fx.Option {
+	return fx.Invoke(
+		func (*Service1) {},
+		invokeService2Func,
+	)
+}
+```
+
+Exceptions:
+- `pkg/config` - it optionally provides fx.Options, so must be provided outside of `Module` function.
+
+## Errors Rules
+
+### Definition
+
+All app-global errors should be defined in `pkg/models/errors.go` file.
+
+Errors for single package only should be defined in that package in `errors.go` file.
+
+### Wrapping
+
+All errors should be wrapped with stack in point of creation with `github.com/pkg/errors.WithStack`.
+
+If error is already wrapped in callee, it should be passed as is. Better do not wrap it again.
+
+## Commit Messages
+
+Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
+
+Commits must be parseable by conventional commits parser.
