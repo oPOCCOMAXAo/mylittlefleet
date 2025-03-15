@@ -1,0 +1,26 @@
+# IDE
+.local
+.vscode
+.idea
+
+# build output
+node_modules
+dist
+build
+bin
+
+# runtime output
+__debug_bin*
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-shm
+*.db
+*.db-journal
+*.db-shm
+*.log
+data
+config
+logs
+
+# misc
+.env
