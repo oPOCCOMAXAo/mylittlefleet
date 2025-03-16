@@ -128,3 +128,4 @@ linters-settings:
       - ok # ok
       - tx # transaction
       - cb # callback
+      - lc # lifecycle

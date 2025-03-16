@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/caarlos0/env/v11"
+	"github.com/opoccomaxao/mylittlefleet/pkg/server"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/logger"
 	"github.com/pkg/errors"
 	"go.uber.org/fx"
@@ -14,6 +15,7 @@ type Config struct {
 
 	Extra  Extra         `envPrefix:""`
 	Logger logger.Config `envPrefix:"LOGGER_"`
+	Server server.Config `envPrefix:"SERVER_"`
 }
 
 type Extra struct {
