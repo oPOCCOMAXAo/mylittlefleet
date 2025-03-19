@@ -4,18 +4,25 @@ import (
 	"time"
 
 	"github.com/caarlos0/env/v11"
+	"github.com/opoccomaxao/mylittlefleet/pkg/clients/db"
 	"github.com/opoccomaxao/mylittlefleet/pkg/server"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/logger"
 	"github.com/pkg/errors"
 	"go.uber.org/fx"
 )
 
+// App configuration, environment variables.
+//
+//go:generate envdoc -output ./../../.example.env -dir ../ -target caarlos0 -types Config -files ./config/config.go -format dotenv
 type Config struct {
 	fx.Out
 
 	Extra  Extra         `envPrefix:""`
 	Logger logger.Config `envPrefix:"LOGGER_"`
 	Server server.Config `envPrefix:"SERVER_"`
+	DB     db.Config     `envPrefix:"DB_"`
+	Auth   auth.Config   `envPrefix:"AUTH_"`
 }
 
 type Extra struct {

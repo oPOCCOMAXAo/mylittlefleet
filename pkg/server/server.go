@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/opoccomaxao/mylittlefleet/pkg/utils/ginutils"
 	pkgerr "github.com/pkg/errors"
 )
 
@@ -19,8 +20,8 @@ type Server struct {
 }
 
 type Config struct {
-	PortHTTP  string `env:"PORT_HTTP"  envDefault:"8080"`
-	PortHTTPS string `env:"PORT_HTTPS" envDefault:"8443"`
+	PortHTTP  string `env:"PORT_HTTP"  envDefault:"8080"` // HTTP port.
+	PortHTTPS string `env:"PORT_HTTPS" envDefault:"8443"` // HTTPS port.
 }
 
 func New(
@@ -40,6 +41,7 @@ func (s *Server) initEngine() {
 	s.engine = gin.New()
 	_ = s.engine.SetTrustedProxies(nil)
 	s.engine.Use(gin.Recovery())
+	s.engine.HTMLRender = ginutils.NewTemplRender(s.engine.HTMLRender)
 }
 
 //nolint:mnd

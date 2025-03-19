@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	DSN string `env:"DSN,required"`
+	DSN string `env:"DSN,required"` // sqlite path: "./db.sqlite3?params"
 }
 
 func NewSQLite(

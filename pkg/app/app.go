@@ -3,7 +3,9 @@ package app
 import (
 	"github.com/opoccomaxao/mylittlefleet/pkg/clients/db"
 	"github.com/opoccomaxao/mylittlefleet/pkg/config"
+	"github.com/opoccomaxao/mylittlefleet/pkg/endpoints"
 	"github.com/opoccomaxao/mylittlefleet/pkg/server"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/logger"
 	"github.com/pkg/errors"
 	"go.uber.org/fx"
@@ -22,6 +24,8 @@ func Run() error {
 		logger.Module(),
 		db.Module(),
 		server.Module(),
+		auth.Module(),
+		endpoints.Invoke(),
 	)
 	app.Run()
 

@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	Debug bool `env:"DEBUG"`
+	Debug bool `env:"DEBUG"` // enables debug logging.
 }
 
 func New(

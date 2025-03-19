@@ -1,0 +1,14 @@
+package views
+
+var headOnce = templ.NewOnceHandle()
+
+templ Head(title string) {
+	@headOnce.Once() {
+		<head>
+			<title>{ title }</title>
+			<script src="/assets/htmx.min.js"></script>
+			<script src="/assets/bootstrap.min.js"></script>
+			<link rel="stylesheet" href="/assets/bootstrap.min.css"/>
+		</head>
+	}
+}

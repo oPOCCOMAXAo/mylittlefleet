@@ -7,8 +7,7 @@ import (
 
 func Module() fx.Option {
 	return fx.Module("server",
-		fx.Provide(New),
-		fx.Decorate(fxutils.Decorate[*Server]),
+		fxutils.ProvideWithHooks[*Server](New),
 		fx.Provide((*Server).Router),
 		fx.Provide((*Server).Engine),
 	)
