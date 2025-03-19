@@ -3,7 +3,8 @@ package auth
 import "github.com/opoccomaxao/mylittlefleet/pkg/utils/ginutils"
 
 const (
-	CtxValue ginutils.CtxValuePointer[TokenClaims] = "__auth"
+	CtxValue  ginutils.CtxValuePointer[TokenClaims] = "__auth"
+	CtxUserID ginutils.CtxValue[int64]              = "__user_id"
 
 	Cookie string = "auth"
 

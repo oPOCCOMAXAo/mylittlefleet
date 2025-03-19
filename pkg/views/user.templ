@@ -1,0 +1,38 @@
+package views
+
+import "github.com/opoccomaxao/mylittlefleet/pkg/models"
+import "github.com/samber/lo"
+import "time"
+
+type UserCardConfig struct {
+	Title string // optional title.
+	User  *models.User
+}
+
+templ UserCardTable(
+	config UserCardConfig,
+) {
+	<div class="card">
+		<div class="card-header">
+			{ lo.CoalesceOrEmpty(config.Title, "User") }
+		</div>
+		<div class="card-body">
+			if config.User != nil {
+				<table class="table">
+					<tbody>
+						<tr>
+							<th scope="row">Username:</th>
+							<td>{ templ.EscapeString(config.User.Login) } </td>
+						</tr>
+						<tr>
+							<th scope="row">CreatedAt:</th>
+							<td>{ time.Unix(config.User.CreatedAt, 0).Format("2006-01-02 15:04:05") } </td>
+						</tr>
+					</tbody>
+				</table>
+			} else {
+				<div class="text-muted">No user</div>
+			}
+		</div>
+	</div>
+}

@@ -1,0 +1,35 @@
+package views
+
+type NavbarConfig struct {
+	Page Page // current active page.
+}
+
+templ Navbar(
+	config NavbarConfig,
+) {
+	<nav class="navbar navbar-expand bg-body-tertiary">
+		<div class="container-fluid justify-content-start">
+			<span class="navbar-brand">{ ConfigBrand }</span>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a
+							class={
+								"nav-link",
+								templ.KV("active", config.Page == PageProfile),
+							}
+							aria-current="page"
+							href="/"
+						>Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link btn btn-sm btn-danger" hx-post="/logout">Logout</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+}

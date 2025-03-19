@@ -1,7 +1,15 @@
 package dashboard
 
-type Service struct{}
+import "github.com/opoccomaxao/mylittlefleet/pkg/services/user"
 
-func NewService() *Service {
-	return &Service{}
+type Service struct {
+	user *user.Service
+}
+
+func NewService(
+	user *user.Service,
+) *Service {
+	return &Service{
+		user: user,
+	}
 }

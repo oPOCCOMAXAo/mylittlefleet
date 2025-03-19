@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/opoccomaxao/mylittlefleet/pkg/utils/hx"
 )
 
 func (s *Service) Logout(ctx *gin.Context) {
@@ -14,5 +15,5 @@ func (s *Service) Logout(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Status(http.StatusOK)
+	hx.Redirect(ctx, "/")
 }

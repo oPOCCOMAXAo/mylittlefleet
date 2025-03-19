@@ -7,6 +7,7 @@ import (
 	"github.com/opoccomaxao/mylittlefleet/pkg/server"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/logger"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/user"
 	"github.com/pkg/errors"
 	"go.uber.org/fx"
 )
@@ -25,6 +26,7 @@ func Run() error {
 		db.Module(),
 		server.Module(),
 		auth.Module(),
+		user.Module(),
 		endpoints.Invoke(),
 	)
 	app.Run()

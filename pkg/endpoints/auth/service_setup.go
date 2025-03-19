@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
+	"github.com/opoccomaxao/mylittlefleet/pkg/utils/hx"
 	"github.com/opoccomaxao/mylittlefleet/pkg/views"
 )
 
@@ -50,5 +51,5 @@ func (s *Service) Setup(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Redirect(http.StatusFound, "/dashboard")
+	hx.Redirect(ctx, "/dashboard")
 }

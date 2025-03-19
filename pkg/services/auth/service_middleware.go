@@ -28,7 +28,15 @@ func (s *Service) MiddlewareAuth(ctx *gin.Context) {
 		return
 	}
 
+	uid, err := claims.GetIntSubject()
+	if err != nil {
+		ctx.Redirect(http.StatusFound, s.authPath)
+
+		return
+	}
+
 	CtxValue.Set(ctx, claims)
+	CtxUserID.Set(ctx, uid)
 }
 
 func (s *Service) SetupSession(

@@ -1,5 +1,7 @@
 package views
 
+import "fmt"
+
 var headOnce = templ.NewOnceHandle()
 
 templ Head(title string) {
@@ -10,5 +12,13 @@ templ Head(title string) {
 			<script src="/assets/bootstrap.min.js"></script>
 			<link rel="stylesheet" href="/assets/bootstrap.min.css"/>
 		</head>
+	}
+}
+
+templ RichError(err error) {
+	if err != nil {
+		<div class="alert alert-danger" role="alert">
+			{ fmt.Sprintf("%+v", err) }
+		</div>
 	}
 }

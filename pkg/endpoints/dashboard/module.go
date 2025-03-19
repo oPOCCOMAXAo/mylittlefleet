@@ -24,5 +24,5 @@ func RegisterEndpoints(
 	dashboard := router.Group("/dashboard")
 	dashboard.Use(auth.MiddlewareAuth)
 
-	dashboard.GET("", service.Dashboard)
+	dashboard.GET("", service.DashboardPage)
 }

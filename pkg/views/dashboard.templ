@@ -1,0 +1,27 @@
+package views
+
+import "github.com/opoccomaxao/mylittlefleet/pkg/models"
+
+type DashboardConfig struct {
+	Page  Page
+	User  *models.User
+	Error error
+}
+
+templ Dashboard(
+	config DashboardConfig,
+) {
+	<html>
+		@Head("Dashboard")
+		<body class="container" data-bs-theme="dark" hx-boost="true">
+			@Navbar(NavbarConfig{
+				Page: config.Page,
+			})
+			@UserCardTable(UserCardConfig{
+				Title: "Current User",
+				User:  config.User,
+			})
+			@RichError(config.Error)
+		</body>
+	</html>
+}
