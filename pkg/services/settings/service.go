@@ -21,7 +21,7 @@ func NewService(
 
 func (s *Service) SetAll(
 	ctx context.Context,
-	settings map[string]string,
+	settings map[models.SettingsKey]string,
 ) error {
 	values := make([]*models.Settings, 0, len(settings))
 	for key, value := range settings {
@@ -36,7 +36,7 @@ func (s *Service) SetAll(
 
 func (s *Service) Set(
 	ctx context.Context,
-	key string,
+	key models.SettingsKey,
 	value string,
 ) error {
 	return s.repo.UpdateSettings(ctx, &models.Settings{
@@ -47,7 +47,7 @@ func (s *Service) Set(
 
 func (s *Service) SetBool(
 	ctx context.Context,
-	key string,
+	key models.SettingsKey,
 	value bool,
 ) error {
 	return s.Set(ctx, key, map[bool]string{true: "1", false: "0"}[value])
@@ -55,14 +55,14 @@ func (s *Service) SetBool(
 
 func (s *Service) GetAll(
 	ctx context.Context,
-	keys ...string,
-) (map[string]string, error) {
+	keys ...models.SettingsKey,
+) (map[models.SettingsKey]string, error) {
 	settings, err := s.repo.GetSettingsByKeys(ctx, keys...)
 	if err != nil {
 		return nil, err
 	}
 
-	res := make(map[string]string)
+	res := make(map[models.SettingsKey]string)
 	for _, setting := range settings {
 		res[setting.Key] = setting.Value
 	}
@@ -72,7 +72,7 @@ func (s *Service) GetAll(
 
 func (s *Service) Get(
 	ctx context.Context,
-	key string,
+	key models.SettingsKey,
 ) (string, error) {
 	settings, err := s.GetAll(ctx, key)
 	if err != nil {
@@ -84,7 +84,7 @@ func (s *Service) Get(
 
 func (s *Service) GetBool(
 	ctx context.Context,
-	key string,
+	key models.SettingsKey,
 ) (bool, error) {
 	res, err := s.Get(ctx, key)
 	if err != nil {
@@ -96,7 +96,7 @@ func (s *Service) GetBool(
 
 func (s *Service) Delete(
 	ctx context.Context,
-	key ...string,
+	key ...models.SettingsKey,
 ) error {
 	return s.repo.DeleteSettingsByKeys(ctx, key...)
 }

@@ -2,10 +2,12 @@ package app
 
 import (
 	"github.com/opoccomaxao/mylittlefleet/pkg/clients/db"
+	"github.com/opoccomaxao/mylittlefleet/pkg/clients/docker"
 	"github.com/opoccomaxao/mylittlefleet/pkg/config"
 	"github.com/opoccomaxao/mylittlefleet/pkg/endpoints"
 	"github.com/opoccomaxao/mylittlefleet/pkg/server"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/container"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/logger"
 	serverSvc "github.com/opoccomaxao/mylittlefleet/pkg/services/server"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/settings"
@@ -33,6 +35,8 @@ func Run() error {
 		user.Module(),
 		settings.Module(),
 		serverSvc.Module(),
+		docker.Module(),
+		container.Module(),
 
 		// invocations.
 		endpoints.Invoke(),

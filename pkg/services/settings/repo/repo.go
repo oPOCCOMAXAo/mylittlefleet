@@ -20,7 +20,7 @@ func NewRepo(db *gorm.DB) *Repo {
 
 func (r *Repo) GetSettingsByKeys(
 	ctx context.Context,
-	keys ...string,
+	keys ...models.SettingsKey,
 ) ([]*models.Settings, error) {
 	if len(keys) == 0 {
 		return nil, nil
@@ -59,7 +59,7 @@ func (r *Repo) UpdateSettings(
 
 func (r *Repo) DeleteSettingsByKeys(
 	ctx context.Context,
-	keys ...string,
+	keys ...models.SettingsKey,
 ) error {
 	if len(keys) == 0 {
 		return nil
