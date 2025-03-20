@@ -19,11 +19,26 @@ templ Navbar(
 						<a
 							class={
 								"nav-link",
-								templ.KV("active", config.Page == PageProfile),
+								templ.KV("active", config.Page.OneOf(
+									PageProfile,
+								)),
 							}
 							aria-current="page"
-							href="/"
+							href="/dashboard"
 						>Home</a>
+					</li>
+					<li class="nav-item">
+						<a
+							class={
+								"nav-link",
+								templ.KV("active", config.Page.OneOf(
+									PageServer,
+									PageServerEdit,
+								)),
+							}
+							aria-current="page"
+							href="/dashboard/server"
+						>Server</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link btn btn-sm btn-danger" hx-post="/logout">Logout</a>

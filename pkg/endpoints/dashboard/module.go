@@ -25,4 +25,7 @@ func RegisterEndpoints(
 	dashboard.Use(auth.MiddlewareAuth)
 
 	dashboard.GET("", service.DashboardPage)
+	dashboard.GET("/server", service.ServerPage)
+	dashboard.POST("/server", service.ServerUpdate)
+	dashboard.GET("/server/edit", service.ServerEditPage)
 }

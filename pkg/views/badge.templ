@@ -1,0 +1,15 @@
+package views
+
+import "github.com/opoccomaxao/mylittlefleet/pkg/models"
+
+templ EnabledBadge(enabled bool) {
+	if enabled {
+		<span class="badge bg-success">Enabled</span>
+	} else {
+		<span class="badge bg-danger">Disabled</span>
+	}
+}
+
+templ ServerStatusBadge(status models.ServerStatus) {
+	<span class={ "badge", "bg-"+status.BSSubClass() }>{ status.String() }</span>
+}

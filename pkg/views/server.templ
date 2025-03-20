@@ -1,0 +1,69 @@
+package views
+
+import (
+	"github.com/opoccomaxao/mylittlefleet/pkg/models"
+	"github.com/samber/lo"
+)
+
+type ServerCardConfig struct {
+	Title  string
+	Server *models.ServerConfig
+}
+
+templ ServerCardTable(
+	config ServerCardConfig,
+) {
+	<div class="card">
+		<div class="card-header">
+			{ lo.CoalesceOrEmpty(config.Title, "Server") }
+		</div>
+		<div class="card-body">
+			if config.Server != nil {
+				<table class="table">
+					<tbody>
+						<tr>
+							<th scope="row">Reverse proxy</th>
+							<td>
+								@EnabledBadge(config.Server.ReverseProxyEnabled)
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">Nginx status</th>
+							<td>
+								@ServerStatusBadge(config.Server.NginxStatus)
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			} else {
+				<div class="text-muted">No config</div>
+			}
+		</div>
+		<div class="card-footer">
+			<a class="btn btn-sm btn-primary" href="/dashboard/server/edit">Edit</a>
+		</div>
+	</div>
+}
+
+templ ServerCardEdit(
+	config ServerCardConfig,
+) {
+	<form class="card" action="/dashboard/server" method="post">
+		<div class="card-header">
+			{ lo.CoalesceOrEmpty(config.Title, "Server") }
+		</div>
+		<div class="card-body">
+			<div class="mb-3">
+				<label class="form-label">Reverse proxy</label>
+				<select class="form-select" name="reverse_proxy_enabled">
+					<option value="true" selected?={ config.Server.ReverseProxyEnabled }>Enabled</option>
+					<option value="false" selected?={ !config.Server.ReverseProxyEnabled }>Disabled</option>
+				</select>
+			</div>
+		</div>
+		<div class="card-footer">
+			<button class="btn btn-sm btn-primary" type="submit">Update</button>
+			<a class="btn btn-sm btn-secondary" href="/dashboard/server">Cancel</a>
+		</div>
+	</form>
+}

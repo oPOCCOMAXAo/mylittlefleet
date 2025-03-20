@@ -18,6 +18,10 @@ type User struct {
 	models.User
 }
 
+type Settings struct {
+	models.Settings
+}
+
 func Migrate(
 	ctx context.Context,
 	db *gorm.DB,
@@ -26,6 +30,7 @@ func Migrate(
 
 	err := migrator.AutoMigrate(
 		&User{},
+		&Settings{},
 	)
 	if err != nil {
 		return errors.WithStack(err)

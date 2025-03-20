@@ -3,9 +3,10 @@ package views
 import "github.com/opoccomaxao/mylittlefleet/pkg/models"
 
 type DashboardConfig struct {
-	Page  Page
-	User  *models.User
-	Error error
+	Page   Page
+	User   *models.User
+	Server *models.ServerConfig
+	Error  error
 }
 
 templ Dashboard(
@@ -17,11 +18,28 @@ templ Dashboard(
 			@Navbar(NavbarConfig{
 				Page: config.Page,
 			})
+			@RichError(config.Error)
+			@DashboardContent(config)
+		</body>
+	</html>
+}
+
+templ DashboardContent(
+	config DashboardConfig,
+) {
+	switch config.Page {
+		case PageProfile:
 			@UserCardTable(UserCardConfig{
 				Title: "Current User",
 				User:  config.User,
 			})
-			@RichError(config.Error)
-		</body>
-	</html>
+		case PageServer:
+			@ServerCardTable(ServerCardConfig{
+				Server: config.Server,
+			})
+		case PageServerEdit:
+			@ServerCardEdit(ServerCardConfig{
+				Server: config.Server,
+			})
+	}
 }

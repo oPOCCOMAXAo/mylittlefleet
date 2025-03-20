@@ -7,6 +7,8 @@ import (
 	"github.com/opoccomaxao/mylittlefleet/pkg/server"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/logger"
+	serverSvc "github.com/opoccomaxao/mylittlefleet/pkg/services/server"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/settings"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/user"
 	"github.com/pkg/errors"
 	"go.uber.org/fx"
@@ -22,11 +24,17 @@ func Run() error {
 		cfg.Provide(),
 		fx.Provide(NewCancelCause),
 		fx.WithLogger(NewFxLogger),
+
+		// modules.
 		logger.Module(),
 		db.Module(),
 		server.Module(),
 		auth.Module(),
 		user.Module(),
+		settings.Module(),
+		serverSvc.Module(),
+
+		// invocations.
 		endpoints.Invoke(),
 	)
 	app.Run()
