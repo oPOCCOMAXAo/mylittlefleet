@@ -10,6 +10,6 @@ templ EnabledBadge(enabled bool) {
 	}
 }
 
-templ ServerStatusBadge(status models.ServerStatus) {
+templ ContainerStatusBadge(status models.ContainerStatus) {
 	<span class={ "badge", "bg-"+status.BSSubClass() }>{ status.String() }</span>
 }
