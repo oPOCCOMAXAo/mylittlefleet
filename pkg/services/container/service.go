@@ -2,14 +2,25 @@ package container
 
 import (
 	"context"
+	"log/slog"
+	"net/http"
+	"sync"
+	"time"
 
 	"github.com/docker/docker/client"
-	"github.com/google/uuid"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/repo"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/settings"
-	"github.com/pkg/errors"
 )
 
 type Service struct {
+	mu                 sync.Mutex
+	runCtx             context.Context //nolint:containedctx
+	runCancel          context.CancelFunc
+	chanSyncContainers chan struct{}
+
+	repo     *repo.Repo
+	logger   *slog.Logger
+	httpCli  *http.Client
 	docker   *client.Client
 	settings *settings.Service
 
@@ -22,51 +33,56 @@ type Config struct {
 }
 
 func NewService(
+	repo *repo.Repo,
+	logger *slog.Logger,
 	docker *client.Client,
 	settings *settings.Service,
 ) *Service {
 	return &Service{
+		repo:   repo,
+		logger: logger.With(slog.String("service", "container")),
+		httpCli: &http.Client{
+			Timeout: time.Second * 10,
+		},
 		docker:   docker,
 		settings: settings,
+
+		runCtx:             context.Background(),
+		chanSyncContainers: make(chan struct{}, 1),
 	}
-}
-
-func (s *Service) initInstallationID(ctx context.Context) error {
-	var err error
-
-	s.installationID, err = s.settings.Get(ctx, "container:installation_id")
-	if err != nil {
-		return err
-	}
-
-	if s.installationID != "" {
-		return nil
-	}
-
-	id, err := uuid.NewRandom()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	s.installationID = id.String()
-
-	err = s.settings.Set(ctx, "container:installation_id", s.installationID)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (s *Service) OnStart(ctx context.Context) error {
-	err := s.initInstallationID(ctx)
-	if err != nil {
-		return err
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.runCancel != nil {
+		return nil
 	}
+
+	s.runCtx, s.runCancel = context.WithCancel(context.Background())
+
+	var err error
+
+	for _, init := range []func(context.Context) error{
+		s.initInstallationID,
+		s.initInternalContainers,
+	} {
+		err = init(ctx)
+		if err != nil {
+			return err
+		}
+	}
+
+	go s.serveSyncContainers()
 
 	return nil
 }
 
-func (s *Service) GetInstallationID() string {
-	return s.installationID
+func (s *Service) OnStop(_ context.Context) error {
+	if s.runCancel != nil {
+		s.runCancel()
+	}
+
+	return nil
 }

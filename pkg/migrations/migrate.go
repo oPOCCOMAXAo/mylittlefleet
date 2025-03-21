@@ -22,6 +22,10 @@ type Settings struct {
 	models.Settings
 }
 
+type Container struct {
+	models.Container
+}
+
 func Migrate(
 	ctx context.Context,
 	db *gorm.DB,
@@ -31,6 +35,7 @@ func Migrate(
 	err := migrator.AutoMigrate(
 		&User{},
 		&Settings{},
+		&Container{},
 	)
 	if err != nil {
 		return errors.WithStack(err)
