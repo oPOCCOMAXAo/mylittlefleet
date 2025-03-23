@@ -10,7 +10,7 @@ import (
 type Service struct {
 	settings *settings.Service
 
-	nginxStatus models.ServerStatus
+	nginxStatus models.ContainerStatus
 }
 
 func NewService(
@@ -19,7 +19,7 @@ func NewService(
 	return &Service{
 		settings: settings,
 
-		nginxStatus: models.ServerStatusError,
+		nginxStatus: models.CSError,
 	}
 }
 

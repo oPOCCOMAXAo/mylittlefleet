@@ -118,6 +118,9 @@ linters-settings:
   wrapcheck:
     ignorePackageGlobs:
       - "github.com/opoccomaxao/mylittlefleet/pkg/*" # all errors in project are wrapped
+      - "github.com/pkg/errors" # all errors in pkg/errors are wrapped
+    ignoreSigs:
+      - "(*gorm.io/gorm.DB).Transaction" # all errors in gorm transactions are wrapped
   varnamelen:
     ignore-names:
       - i

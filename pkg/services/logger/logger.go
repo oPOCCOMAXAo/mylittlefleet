@@ -25,13 +25,16 @@ func New(
 func NewDefault() *slog.Logger {
 	return slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: true,
-		Level:     slog.LevelDebug,
 	}))
 }
 
 //nolint:mnd
 func NewDebug() *slog.Logger {
 	return slog.New(devslog.NewHandler(os.Stdout, &devslog.Options{
+		HandlerOptions: &slog.HandlerOptions{
+			AddSource: true,
+			Level:     slog.LevelDebug,
+		},
 		MaxErrorStackTrace: 10,
 	}))
 }
