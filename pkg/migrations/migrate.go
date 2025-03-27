@@ -49,6 +49,12 @@ type ContainerPort struct {
 	Container *Container `gorm:"foreignKey:ContainerID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
+type DockerTask struct {
+	models.DockerTask
+
+	Container *Container `gorm:"foreignKey:ContainerID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+}
+
 func Migrate(
 	ctx context.Context,
 	db *gorm.DB,
@@ -63,6 +69,7 @@ func Migrate(
 		&ContainerEnv{},
 		&ContainerVolume{},
 		&ContainerPort{},
+		&DockerTask{},
 	)
 	if err != nil {
 		return errors.WithStack(err)

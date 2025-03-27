@@ -5,6 +5,7 @@ import (
 
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 )
 
 func (r *Repo) CreateContainer(
@@ -44,6 +45,29 @@ func (r *Repo) GetContainersByName(
 	return res, nil
 }
 
+func (r *Repo) GetContainerByID(
+	ctx context.Context,
+	id int64,
+) (*models.Container, error) {
+	var res models.Container
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Container{}).
+		Where("id = ?", id).
+		Take(&res).
+		Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.WithStack(models.ErrNotFound)
+		}
+
+		return nil, errors.WithStack(err)
+	}
+
+	return &res, nil
+}
+
 func (r *Repo) UpdateContainer(
 	ctx context.Context,
 	value *models.Container,
@@ -54,6 +78,41 @@ func (r *Repo) UpdateContainer(
 		Where("id = ?", value.ID).
 		Select("*").
 		Updates(value).
+		Error
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
+func (r *Repo) GetAllContainers(
+	ctx context.Context,
+) ([]*models.Container, error) {
+	var res []*models.Container
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Container{}).
+		Find(&res).
+		Error
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return res, nil
+}
+
+func (r *Repo) UpdateContainerDockerID(
+	ctx context.Context,
+	id int64,
+	dockerID string,
+) error {
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Container{}).
+		Where("id = ?", id).
+		Update("docker_id", dockerID).
 		Error
 	if err != nil {
 		return errors.WithStack(err)

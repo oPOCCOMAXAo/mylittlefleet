@@ -6,10 +6,11 @@ import (
 	"strings"
 
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/structs"
 	"github.com/opoccomaxao/mylittlefleet/pkg/utils/diff"
 )
 
-func (s *Service) EnsureContainerEnvs(
+func (s *Service) SaveContainerEnvs(
 	ctx context.Context,
 	containerID int64,
 	newEnvs []*models.ContainerEnv,
@@ -53,6 +54,32 @@ func (s *Service) EnsureContainerEnvs(
 	err = s.repo.UpdateContainerEnvs(ctx, diff.Updated)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (s *Service) FillEnvsInfo(
+	ctx context.Context,
+	containers []*structs.FullContainerInfo,
+) error {
+	ids := make([]int64, 0, len(containers))
+	for _, container := range containers {
+		ids = append(ids, container.Container.ID)
+	}
+
+	envs, err := s.repo.GetContainerEnvsByContainerIDs(ctx, ids)
+	if err != nil {
+		return err
+	}
+
+	envsByContainerID := make(map[int64][]*models.ContainerEnv)
+	for _, env := range envs {
+		envsByContainerID[env.ContainerID] = append(envsByContainerID[env.ContainerID], env)
+	}
+
+	for _, container := range containers {
+		container.Envs = envsByContainerID[container.Container.ID]
 	}
 
 	return nil

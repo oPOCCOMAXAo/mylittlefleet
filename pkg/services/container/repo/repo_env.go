@@ -97,3 +97,22 @@ func (r *Repo) UpdateContainerEnvs(
 
 	return nil
 }
+
+func (r *Repo) GetContainerEnvsByContainerIDs(
+	ctx context.Context,
+	ids []int64,
+) ([]*models.ContainerEnv, error) {
+	var res []*models.ContainerEnv
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.ContainerEnv{}).
+		Where("container_id IN (?)", ids).
+		Find(&res).
+		Error
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return res, nil
+}

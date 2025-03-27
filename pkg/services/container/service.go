@@ -17,6 +17,7 @@ type Service struct {
 	runCtx             context.Context //nolint:containedctx
 	runCancel          context.CancelFunc
 	chanSyncWithDocker chan struct{}
+	chanTasks          chan struct{}
 
 	repo     *repo.Repo
 	logger   *slog.Logger
@@ -50,6 +51,7 @@ func NewService(
 
 		runCtx:             context.Background(),
 		chanSyncWithDocker: make(chan struct{}, 1),
+		chanTasks:          make(chan struct{}, 1),
 	}
 }
 
@@ -76,6 +78,7 @@ func (s *Service) OnStart(ctx context.Context) error {
 	}
 
 	go s.serveSyncWithDocker()
+	go s.serveTasks()
 
 	return nil
 }

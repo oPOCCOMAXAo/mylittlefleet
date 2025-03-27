@@ -97,3 +97,22 @@ func (r *Repo) UpdateContainerPorts(
 
 	return nil
 }
+
+func (r *Repo) GetContainerPortsByContainerIDs(
+	ctx context.Context,
+	ids []int64,
+) ([]*models.ContainerPort, error) {
+	var res []*models.ContainerPort
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.ContainerPort{}).
+		Where("container_id IN (?)", ids).
+		Find(&res).
+		Error
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return res, nil
+}

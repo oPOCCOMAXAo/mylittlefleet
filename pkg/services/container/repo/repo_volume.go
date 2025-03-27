@@ -61,6 +61,25 @@ func (r *Repo) GetContainerVolumes(
 	return res, nil
 }
 
+func (r *Repo) GetVolumesByDockerName(
+	ctx context.Context,
+	names []string,
+) ([]models.Volume, error) {
+	var res []models.Volume
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Volume{}).
+		Where("docker_name IN (?)", names).
+		Find(&res).
+		Error
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return res, nil
+}
+
 func (r *Repo) DeleteContainerVolumesByID(
 	ctx context.Context,
 	ids []int64,
@@ -108,6 +127,94 @@ func (r *Repo) UpdateContainerVolumes(
 		})
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (r *Repo) GetContainerVolumesByContainerIDs(
+	ctx context.Context,
+	ids []int64,
+) ([]*models.ContainerVolume, error) {
+	var res []*models.ContainerVolume
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.ContainerVolume{}).
+		Where("container_id IN (?)", ids).
+		Find(&res).
+		Error
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return res, nil
+}
+
+func (r *Repo) GetVolumesByID(
+	ctx context.Context,
+	ids []int64,
+) ([]*models.Volume, error) {
+	var res []*models.Volume
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Volume{}).
+		Where("id IN (?)", ids).
+		Find(&res).
+		Error
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return res, nil
+}
+
+func (r *Repo) UpdateVolumes(
+	ctx context.Context,
+	volumes []*models.Volume,
+) error {
+	if len(volumes) == 0 {
+		return nil
+	}
+
+	err := r.db.
+		WithContext(ctx).
+		Transaction(func(tx *gorm.DB) error {
+			for _, volume := range volumes {
+				err := tx.
+					Model(&models.Volume{}).
+					Where("id = ?", volume.ID).
+					Select("*").
+					Updates(volume).
+					Error
+				if err != nil {
+					return errors.WithStack(err)
+				}
+			}
+
+			return nil
+		})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Repo) UpdateVolume(
+	ctx context.Context,
+	volume *models.Volume,
+) error {
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Volume{}).
+		Where("id = ?", volume.ID).
+		Select("*").
+		Updates(volume).
+		Error
+	if err != nil {
+		return errors.WithStack(err)
 	}
 
 	return nil

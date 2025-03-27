@@ -9,3 +9,15 @@ type Volume struct {
 func (Volume) TableName() string {
 	return "volumes"
 }
+
+func (v *Volume) UniqueKey() int64 {
+	return v.ID
+}
+
+func (v *Volume) Equal(other *Volume) bool {
+	return v.DockerName == other.DockerName &&
+		v.Internal == other.Internal
+}
+
+func (v *Volume) PrepareForUpdate(_ *Volume) {
+}

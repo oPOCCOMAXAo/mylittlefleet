@@ -76,7 +76,7 @@ func (s *Service) initInternalContainers(ctx context.Context) error {
 	}
 
 	for _, container := range containers {
-		err := s.EnsureFullContainerSettings(ctx, container)
+		err := s.SaveFullContainerSettings(ctx, container)
 		if err != nil {
 			return errors.Wrapf(err, "container: %s", container.Container.Name)
 		}
@@ -89,7 +89,7 @@ func (s *Service) GetInstallationID() string {
 	return s.installationID
 }
 
-func (s *Service) FindCurrentInstallation(
+func (s *Service) findCurrentInstallation(
 	ctx context.Context,
 ) (*container.Summary, error) {
 	containers, err := s.docker.ContainerList(ctx, container.ListOptions{
@@ -171,13 +171,16 @@ func (s *Service) getOtherInstallationID(
 
 	res, err := s.httpCli.Do(req)
 	if err != nil {
-		if errors.Is(err, syscall.ECONNREFUSED) {
+		if errors.Is(err, syscall.ECONNREFUSED) ||
+			errors.Is(err, syscall.EHOSTUNREACH) {
 			return "", errors.WithStack(models.ErrNotFound)
 		}
 
 		var urlErr *url.Error
 		if errors.As(err, &urlErr) {
-			if strings.Contains(urlErr.Error(), "malformed HTTP response") {
+			strErr := urlErr.Error()
+			if strings.Contains(strErr, "malformed HTTP response") ||
+				strings.Contains(strErr, "readLoopPeekFailLocked") {
 				return "", errors.WithStack(models.ErrNotFound)
 			}
 		}
