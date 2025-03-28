@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
 	"github.com/opoccomaxao/mylittlefleet/pkg/utils/ginutils"
+	"github.com/opoccomaxao/mylittlefleet/pkg/utils/hx"
 	"go.uber.org/fx"
 )
 
@@ -22,10 +23,16 @@ func RegisterEndpoints(
 	router.GET("/", auth.MiddlewareAuth, ginutils.StaticRedirect("/dashboard"))
 
 	dashboard := router.Group("/dashboard")
-	dashboard.Use(auth.MiddlewareAuth)
+	dashboard.Use(
+		auth.MiddlewareAuth,
+		hx.MiddlewareInjectContext,
+	)
 
 	dashboard.GET("", service.DashboardPage)
+
 	dashboard.GET("/server", service.ServerPage)
 	dashboard.POST("/server", service.ServerUpdate)
 	dashboard.GET("/server/edit", service.ServerEditPage)
+
+	dashboard.GET("/containers", service.ContainerList)
 }

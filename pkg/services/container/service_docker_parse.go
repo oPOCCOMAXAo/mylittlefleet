@@ -10,7 +10,6 @@ import (
 	"github.com/docker/docker/api/types/mount"
 	"github.com/opoccomaxao/mylittlefleet/pkg/clients/docker"
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
-	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/structs"
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
@@ -18,9 +17,9 @@ import (
 func (s *Service) parseFullInfoFromSummary(
 	ctx context.Context,
 	summary *container.Summary,
-) (*structs.FullContainerInfo, error) {
+) (*models.FullContainerInfo, error) {
 	var (
-		res structs.FullContainerInfo
+		res models.FullContainerInfo
 		err error
 	)
 
@@ -83,15 +82,15 @@ func (s *Service) parseContainerFromSummary(
 
 func (s *Service) parseVolumesFromSummary(
 	summary *container.Summary,
-) []*structs.VolumeDomain {
-	res := make([]*structs.VolumeDomain, 0, len(summary.Mounts))
+) []*models.VolumeDomain {
+	res := make([]*models.VolumeDomain, 0, len(summary.Mounts))
 
 	for _, mountPoint := range summary.Mounts {
 		if mountPoint.Type != mount.TypeVolume {
 			continue
 		}
 
-		res = append(res, &structs.VolumeDomain{
+		res = append(res, &models.VolumeDomain{
 			ContainerVolume: models.ContainerVolume{
 				ContainerPath: mountPoint.Destination,
 			},

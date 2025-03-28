@@ -162,3 +162,22 @@ func (r *Repo) UpdateContainerPaused(
 
 	return nil
 }
+
+func (r *Repo) GetDashboardContainers(
+	ctx context.Context,
+) ([]*models.Container, error) {
+	var res []*models.Container
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Container{}).
+		// Where("internal = 0").
+		Where("deleted = 0").
+		Find(&res).
+		Error
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return res, nil
+}

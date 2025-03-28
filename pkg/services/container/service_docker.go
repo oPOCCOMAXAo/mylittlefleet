@@ -190,13 +190,13 @@ func (s *Service) getDockerContainersRaw(
 func (s *Service) getDockerContainers(
 	ctx context.Context,
 	options structs.ContainersOptions,
-) ([]*structs.FullContainerInfo, error) {
+) ([]*models.FullContainerInfo, error) {
 	dockerInfo, err := s.getDockerContainersRaw(ctx, options)
 	if err != nil {
 		return nil, err
 	}
 
-	containers := make([]*structs.FullContainerInfo, 0, len(dockerInfo))
+	containers := make([]*models.FullContainerInfo, 0, len(dockerInfo))
 
 	for _, info := range dockerInfo {
 		container, err := s.parseFullInfoFromSummary(ctx, &info)
@@ -211,7 +211,7 @@ func (s *Service) getDockerContainers(
 }
 
 func (s *Service) prepareContainerConfigFromInfo(
-	info *structs.FullContainerInfo,
+	info *models.FullContainerInfo,
 ) *container.Config {
 	var res container.Config
 
@@ -252,7 +252,7 @@ func (s *Service) prepareContainerConfigFromInfo(
 }
 
 func (s *Service) prepareHostConfigFromInfo(
-	info *structs.FullContainerInfo,
+	info *models.FullContainerInfo,
 ) *container.HostConfig {
 	var res container.HostConfig
 

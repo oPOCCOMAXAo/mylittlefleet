@@ -33,3 +33,8 @@ func (s *ContainerVolume) PrepareForUpdate(o *ContainerVolume) {
 	s.ID = o.ID
 	s.VolumeID = o.VolumeID
 }
+
+type VolumeDomain struct {
+	Volume
+	ContainerVolume
+}

@@ -29,7 +29,7 @@ func (s *Service) setStorageVolumesUpdate(
 	upd *updater.Updater,
 	params structs.DiffContainerParams,
 ) {
-	rtvByPath := make(map[string]*structs.VolumeDomain, len(params.Runtime.Volumes))
+	rtvByPath := make(map[string]*models.VolumeDomain, len(params.Runtime.Volumes))
 	for _, volume := range params.Runtime.Volumes {
 		rtvByPath[volume.ContainerVolume.ContainerPath] = volume
 	}

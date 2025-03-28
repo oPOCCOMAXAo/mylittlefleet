@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
-	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/structs"
 	"github.com/opoccomaxao/mylittlefleet/pkg/utils/diff"
 )
 
@@ -61,7 +60,7 @@ func (s *Service) SaveContainerEnvs(
 
 func (s *Service) FillEnvsInfo(
 	ctx context.Context,
-	containers []*structs.FullContainerInfo,
+	containers []*models.FullContainerInfo,
 ) error {
 	ids := make([]int64, 0, len(containers))
 	for _, container := range containers {

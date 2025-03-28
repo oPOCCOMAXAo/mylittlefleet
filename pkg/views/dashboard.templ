@@ -1,28 +1,69 @@
 package views
 
 import "github.com/opoccomaxao/mylittlefleet/pkg/models"
+import "github.com/opoccomaxao/mylittlefleet/pkg/utils/hx"
 
 type DashboardConfig struct {
-	Page   Page
-	User   *models.User
-	Server *models.ServerConfig
-	Error  error
+	Page       Page
+	User       *models.User
+	Server     *models.ServerConfig
+	Containers []*models.FullContainerInfo
+	Error      error
 }
 
 templ Dashboard(
 	config DashboardConfig,
 ) {
+	{{ hxCtx := hx.GetContext(ctx) }}
+	switch hxCtx.Target {
+		case "dashboard-content":
+			@DashboardHXContent(config)
+		case "dashboard-body":
+			@DashboardHXBody(config)
+		default:
+			@DashboardFull(config)
+	}
+}
+
+templ DashboardFull(
+	config DashboardConfig,
+) {
 	<html>
 		@Head("Dashboard")
-		<body class="container" data-bs-theme="dark" hx-boost="true">
-			@Navbar(NavbarConfig{
-				Page: config.Page,
-			})
-			@RichError(config.Error)
-			@DashboardContent(config)
-			@HeadEventContainer()
+		<body
+			data-bs-theme="dark"
+			hx-boost="true"
+			id="dashboard-body"
+			hx-target="this"
+			hx-swap="innerHTML"
+		>
+			@DashboardHXBody(config)
 		</body>
 	</html>
+}
+
+templ DashboardHXBody(
+	config DashboardConfig,
+) {
+	@Navbar(NavbarConfig{
+		Page: config.Page,
+	})
+	@HeadEventContainer()
+	<div
+		class="container"
+		id="dashboard-content"
+		hx-target="this"
+		hx-swap="innerHTML"
+	>
+		@DashboardHXContent(config)
+	</div>
+}
+
+templ DashboardHXContent(
+	config DashboardConfig,
+) {
+	@RichError(config.Error)
+	@DashboardContent(config)
 }
 
 templ DashboardContent(
@@ -31,16 +72,23 @@ templ DashboardContent(
 	switch config.Page {
 		case PageProfile:
 			@UserCardTable(UserCardConfig{
-				Title: "Current User",
+				Title: "Home",
 				User:  config.User,
 			})
 		case PageServer:
 			@ServerCardTable(ServerCardConfig{
+				Title:  "Server",
 				Server: config.Server,
 			})
 		case PageServerEdit:
 			@ServerCardEdit(ServerCardConfig{
+				Title:  "Server / Edit",
 				Server: config.Server,
+			})
+		case PageContainerList:
+			@ContainerList(ContainerListParams{
+				Title:      "Containers",
+				Containers: config.Containers,
 			})
 	}
 }

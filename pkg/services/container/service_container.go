@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
-	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/structs"
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
@@ -29,7 +28,7 @@ func (s *Service) GetContainerByName(
 //nolint:cyclop
 func (s *Service) SaveFullContainerSettings(
 	ctx context.Context,
-	container *structs.FullContainerInfo,
+	container *models.FullContainerInfo,
 ) error {
 	var (
 		existing *models.Container
@@ -109,7 +108,7 @@ func (s *Service) setContainerDiff(newItem, oldItem *models.Container) {
 
 func (s *Service) FillContainers(
 	ctx context.Context,
-	containers ...*structs.FullContainerInfo,
+	containers ...*models.FullContainerInfo,
 ) error {
 	for _, container := range containers {
 		if container.Container.DockerName == "" {
@@ -137,15 +136,15 @@ func (s *Service) FillContainers(
 
 func (s *Service) getAllFullContainerInfos(
 	ctx context.Context,
-) ([]*structs.FullContainerInfo, error) {
+) ([]*models.FullContainerInfo, error) {
 	containers, err := s.repo.GetAllContainers(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	res := make([]*structs.FullContainerInfo, 0, len(containers))
+	res := make([]*models.FullContainerInfo, 0, len(containers))
 	for _, container := range containers {
-		res = append(res, &structs.FullContainerInfo{
+		res = append(res, &models.FullContainerInfo{
 			Container: container,
 		})
 	}
@@ -161,13 +160,13 @@ func (s *Service) getAllFullContainerInfos(
 func (s *Service) GetContainerFullInfoByID(
 	ctx context.Context,
 	id int64,
-) (*structs.FullContainerInfo, error) {
+) (*models.FullContainerInfo, error) {
 	container, err := s.repo.GetContainerByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	res := &structs.FullContainerInfo{
+	res := &models.FullContainerInfo{
 		Container: container,
 	}
 

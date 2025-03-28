@@ -13,7 +13,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/opoccomaxao/mylittlefleet/pkg/clients/docker"
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
-	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/structs"
 	"github.com/pkg/errors"
 )
 
@@ -46,7 +45,7 @@ func (s *Service) initInstallationID(ctx context.Context) error {
 
 //nolint:mnd
 func (s *Service) initInternalContainers(ctx context.Context) error {
-	containers := []*structs.FullContainerInfo{
+	containers := []*models.FullContainerInfo{
 		{
 			Container: &models.Container{
 				Name:     ContainerNameSelf,

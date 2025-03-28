@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
-	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/structs"
 	"github.com/opoccomaxao/mylittlefleet/pkg/utils/diff"
 )
 
@@ -13,7 +12,7 @@ import (
 func (s *Service) SaveContainerVolumes(
 	ctx context.Context,
 	containerID int64,
-	domain []*structs.VolumeDomain,
+	domain []*models.VolumeDomain,
 ) error {
 	err := s.SaveVolumes(ctx, domain)
 	if err != nil {
@@ -87,7 +86,7 @@ func (s *Service) SaveContainerVolumes(
 
 func (s *Service) SaveVolumes(
 	ctx context.Context,
-	domain []*structs.VolumeDomain,
+	domain []*models.VolumeDomain,
 ) error {
 	ids := make([]int64, 0, len(domain))
 
@@ -131,7 +130,7 @@ func (s *Service) SaveVolumes(
 
 func (s *Service) FillVolumesInfo(
 	ctx context.Context,
-	containers []*structs.FullContainerInfo,
+	containers []*models.FullContainerInfo,
 ) error {
 	ids := make([]int64, 0, len(containers))
 	for _, container := range containers {
@@ -168,10 +167,10 @@ func (s *Service) FillVolumesInfo(
 
 	for _, container := range containers {
 		cvs := cvByContainerID[container.Container.ID]
-		container.Volumes = make([]*structs.VolumeDomain, 0, len(cvs))
+		container.Volumes = make([]*models.VolumeDomain, 0, len(cvs))
 
 		for _, cv := range cvs {
-			temp := &structs.VolumeDomain{
+			temp := &models.VolumeDomain{
 				ContainerVolume: *cv,
 			}
 

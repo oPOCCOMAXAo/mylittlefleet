@@ -2,21 +2,14 @@ package structs
 
 import "github.com/opoccomaxao/mylittlefleet/pkg/models"
 
-type FullContainerInfo struct {
-	Container *models.Container
-	Volumes   []*VolumeDomain
-	Ports     []*models.ContainerPort
-	Envs      []*models.ContainerEnv
-}
-
 type ContainersDiff struct {
-	DockerCreate []*FullContainerInfo
-	DockerUpdate []*FullContainerInfo
-	DockerDelete []*FullContainerInfo
-	DockerStart  []*FullContainerInfo
-	DockerStop   []*FullContainerInfo
+	DockerCreate []*models.FullContainerInfo
+	DockerUpdate []*models.FullContainerInfo
+	DockerDelete []*models.FullContainerInfo
+	DockerStart  []*models.FullContainerInfo
+	DockerStop   []*models.FullContainerInfo
 
-	StorageUpdate []*FullContainerInfo
+	StorageUpdate []*models.FullContainerInfo
 }
 
 func (diff *ContainersDiff) Append(other *ContainersDiff) {
@@ -29,13 +22,13 @@ func (diff *ContainersDiff) Append(other *ContainersDiff) {
 }
 
 type DiffContainersListParams struct {
-	Storage []*FullContainerInfo // storage containers, in db.
-	Runtime []*FullContainerInfo // runtime containers, in docker.
+	Storage []*models.FullContainerInfo // storage containers, in db.
+	Runtime []*models.FullContainerInfo // runtime containers, in docker.
 }
 
 type DiffContainerParams struct {
-	Storage *FullContainerInfo // storage container, in db.
-	Runtime *FullContainerInfo // runtime container, in docker.
+	Storage *models.FullContainerInfo // storage container, in db.
+	Runtime *models.FullContainerInfo // runtime container, in docker.
 }
 
 type ContainersOptions struct {

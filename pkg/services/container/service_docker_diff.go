@@ -14,12 +14,12 @@ func (s *Service) diffContainers(
 ) structs.ContainersDiff {
 	var res structs.ContainersDiff
 
-	rtcByID := make(map[int64]*structs.FullContainerInfo, len(params.Runtime))
+	rtcByID := make(map[int64]*models.FullContainerInfo, len(params.Runtime))
 	for _, container := range params.Runtime {
 		rtcByID[container.Container.ID] = container
 	}
 
-	stcByID := make(map[int64]*structs.FullContainerInfo, len(params.Storage))
+	stcByID := make(map[int64]*models.FullContainerInfo, len(params.Storage))
 	for _, container := range params.Storage {
 		stcByID[container.Container.ID] = container
 	}
@@ -98,12 +98,12 @@ func (s *Service) isRuntimeVolumesChanged(
 	cmp *updater.Comparer,
 	params structs.DiffContainerParams,
 ) {
-	stvByPath := make(map[string]*structs.VolumeDomain, len(params.Storage.Volumes))
+	stvByPath := make(map[string]*models.VolumeDomain, len(params.Storage.Volumes))
 	for _, volume := range params.Storage.Volumes {
 		stvByPath[volume.ContainerVolume.ContainerPath] = volume
 	}
 
-	rtvByPath := make(map[string]*structs.VolumeDomain, len(params.Runtime.Volumes))
+	rtvByPath := make(map[string]*models.VolumeDomain, len(params.Runtime.Volumes))
 
 	for _, rtv := range params.Runtime.Volumes {
 		rtvByPath[rtv.ContainerVolume.ContainerPath] = rtv

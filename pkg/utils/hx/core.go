@@ -17,3 +17,7 @@ func Redirect(ctx *gin.Context, url string) {
 		ctx.Redirect(http.StatusFound, url)
 	}
 }
+
+func GetTarget(ctx *gin.Context) string {
+	return ctx.GetHeader("HX-Target")
+}

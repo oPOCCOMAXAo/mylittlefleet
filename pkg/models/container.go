@@ -30,3 +30,10 @@ type Container struct {
 func (c *Container) TableName() string {
 	return "containers"
 }
+
+type FullContainerInfo struct {
+	Container *Container
+	Volumes   []*VolumeDomain
+	Ports     []*ContainerPort
+	Envs      []*ContainerEnv
+}
