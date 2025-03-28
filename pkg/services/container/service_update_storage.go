@@ -59,7 +59,11 @@ func (s *Service) setStorageEnvsUpdate(
 		rteByName[env.Name] = env
 	}
 
+	steByName := make(map[string]*models.ContainerEnv, len(params.Storage.Envs))
+
 	for i, env := range params.Storage.Envs {
+		steByName[env.Name] = env
+
 		rte := rteByName[env.Name]
 		if rte == nil {
 			params.Storage.Envs[i] = nil
@@ -75,4 +79,13 @@ func (s *Service) setStorageEnvsUpdate(
 	}
 
 	xslices.RemoveZeroRef(&params.Storage.Envs)
+
+	for name, rte := range rteByName {
+		ste := steByName[name]
+		if ste == nil {
+			params.Storage.Envs = append(params.Storage.Envs, rte)
+
+			upd.SetChanged()
+		}
+	}
 }

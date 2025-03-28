@@ -8,6 +8,7 @@ import (
 	"github.com/opoccomaxao/mylittlefleet/pkg/server"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/auth"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/container"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/event"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/logger"
 	serverSvc "github.com/opoccomaxao/mylittlefleet/pkg/services/server"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/settings"
@@ -37,6 +38,7 @@ func Run() error {
 		serverSvc.Module(),
 		docker.Module(),
 		container.Module(),
+		event.Module(),
 
 		// invocations.
 		endpoints.Invoke(),

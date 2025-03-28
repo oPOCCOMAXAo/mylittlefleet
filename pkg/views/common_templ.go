@@ -8,7 +8,9 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var headOnce = templ.NewOnceHandle()
 
@@ -52,13 +54,13 @@ func Head(title string) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/common.templ`, Line: 10, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/common.templ`, Line: 12, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title><script src=\"/assets/htmx.min.js\"></script><script src=\"/assets/bootstrap.min.js\"></script><link rel=\"stylesheet\" href=\"/assets/bootstrap.min.css\"></head>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title><script src=\"/assets/htmx.min.js\"></script><script src=\"/assets/sse.min.js\"></script><script src=\"/assets/bootstrap.min.js\"></script><link rel=\"stylesheet\" href=\"/assets/bootstrap.min.css\"></head>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -101,7 +103,7 @@ func RichError(err error) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%+v", err))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/common.templ`, Line: 21, Col: 28}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/common.templ`, Line: 24, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {

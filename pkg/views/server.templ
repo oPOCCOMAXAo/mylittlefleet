@@ -2,6 +2,7 @@ package views
 
 import (
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/container"
 	"github.com/samber/lo"
 )
 
@@ -30,7 +31,10 @@ templ ServerCardTable(
 						<tr>
 							<th scope="row">Nginx status</th>
 							<td>
-								@ContainerStatusBadge(config.Server.NginxStatus)
+								@ContainerStatusBadge(ContainerStatusBadgeConfig{
+									Status:        config.Server.NginxStatus,
+									ContainerName: container.ContainerNameReverseProxy,
+								})
 							</td>
 						</tr>
 					</tbody>

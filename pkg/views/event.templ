@@ -1,0 +1,68 @@
+package views
+
+import "time"
+
+var headEventContainerOnce = templ.NewOnceHandle()
+
+templ HeadEventContainer() {
+	@headEventContainerOnce.Once() {
+		<div
+			hx-ext="sse"
+			sse-connect="/event/container"
+			sse-swap="container,container-status"
+			hx-target="#toaster"
+			hx-swap="beforeend"
+		></div>
+		@Toaster()
+	}
+}
+
+var toasterOnce = templ.NewOnceHandle()
+
+templ Toaster() {
+	@toasterOnce.Once() {
+		<div id="toaster" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+		<script src="/assets/toaster.js"></script>
+	}
+}
+
+type ToastParams struct {
+	Title   string
+	Message string
+	IsCode  bool
+	Time    time.Time
+}
+
+templ Toast(params ToastParams) {
+	<div
+		class="toast"
+		role="alert"
+		aria-live="assertive"
+		aria-atomic="true"
+		data-bs-autohide="false"
+		hx-target="this"
+		hx-swap="outerHTML"
+		hx-push-url="false"
+	>
+		<div class="toast-header">
+			<strong class="me-auto">{ templ.EscapeString(params.Title) }</strong>
+			if !params.Time.IsZero() {
+				<small>{ params.Time.Format("2006-01-02 15:04:05") }</small>
+			}
+			<button
+				type="button"
+				class="btn-close"
+				data-bs-dismiss="toast"
+				aria-label="Close"
+				hx-get="/hx/empty"
+				hx-swap="delete"
+			></button>
+		</div>
+		if params.IsCode {
+			<pre class="toast-body" style="max-height: 300px;">{ params.Message }</pre>
+		} else {
+			<div class="toast-body">{ templ.EscapeString(params.Message) }</div>
+		}
+	</div>
+	@templ.JSFuncCall(`showToasts`)
+}

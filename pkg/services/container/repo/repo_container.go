@@ -120,3 +120,45 @@ func (r *Repo) UpdateContainerDockerID(
 
 	return nil
 }
+
+func (r *Repo) GetContainerIDByName(
+	ctx context.Context,
+	name string,
+) (int64, error) {
+	var res models.Container
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Container{}).
+		Where("name = ?", name).
+		Select("id").
+		Take(&res).
+		Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, errors.WithStack(models.ErrNotFound)
+		}
+
+		return 0, errors.WithStack(err)
+	}
+
+	return res.ID, nil
+}
+
+func (r *Repo) UpdateContainerPaused(
+	ctx context.Context,
+	id int64,
+	paused bool,
+) error {
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Container{}).
+		Where("id = ?", id).
+		Update("paused", paused).
+		Error
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}

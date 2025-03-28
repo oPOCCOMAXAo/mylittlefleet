@@ -178,3 +178,71 @@ func (s *Service) GetContainerFullInfoByID(
 
 	return res, nil
 }
+
+func (s *Service) StartContainerByName(
+	ctx context.Context,
+	name string,
+) error {
+	containerID, err := s.repo.GetContainerIDByName(ctx, name)
+	if err != nil {
+		return err
+	}
+
+	return s.StartContainerByID(ctx, containerID)
+}
+
+func (s *Service) StopContainerByName(
+	ctx context.Context,
+	name string,
+) error {
+	containerID, err := s.repo.GetContainerIDByName(ctx, name)
+	if err != nil {
+		return err
+	}
+
+	return s.StopContainerByID(ctx, containerID)
+}
+
+func (s *Service) StartContainerByID(
+	ctx context.Context,
+	id int64,
+) error {
+	cnt, err := s.repo.GetContainerByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if cnt.Paused {
+		err = s.repo.UpdateContainerPaused(ctx, id, false)
+		if err != nil {
+			return err
+		}
+	}
+
+	return s.CreateTasks(ctx, &models.DockerTask{
+		ContainerID: id,
+		Action:      models.DTAStart,
+	})
+}
+
+func (s *Service) StopContainerByID(
+	ctx context.Context,
+	id int64,
+) error {
+	cnt, err := s.repo.GetContainerByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if !cnt.Paused {
+		err = s.repo.UpdateContainerPaused(ctx, id, true)
+		if err != nil {
+			return err
+		}
+	}
+
+	return s.CreateTasks(ctx, &models.DockerTask{
+		ContainerID: id,
+		Action:      models.DTAStop,
+	})
+}

@@ -10,6 +10,21 @@ templ EnabledBadge(enabled bool) {
 	}
 }
 
-templ ContainerStatusBadge(status models.ContainerStatus) {
-	<span class={ "badge", "bg-"+status.BSSubClass() }>{ status.String() }</span>
+type ContainerStatusBadgeConfig struct {
+	Status        models.ContainerStatus
+	ContainerName string
+	IsSSE         bool
+}
+
+templ ContainerStatusBadge(
+	config ContainerStatusBadgeConfig,
+) {
+	<span
+		id={ "csb-" + config.ContainerName }
+		class={ "badge", "bg-"+config.Status.BSSubClass() }
+		if config.IsSSE {
+			hx-swap="outerHTML"
+			hx-swap-oob="true"
+		}
+	>{ config.Status.String() }</span>
 }

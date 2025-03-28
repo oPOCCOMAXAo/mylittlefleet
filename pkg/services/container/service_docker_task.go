@@ -5,6 +5,7 @@ import (
 	"io"
 	"log/slog"
 	"strconv"
+	"time"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/image"
@@ -125,6 +126,13 @@ func (s *Service) stopDockerContainer(
 		return err
 	}
 
+	_ = s.event.NotifyContainerEvent(ctx, models.ContainerEvent{
+		ID:     cnt.ID,
+		Name:   cnt.Name,
+		Time:   time.Now(),
+		Status: models.CSStopping,
+	})
+
 	err = s.docker.ContainerStop(ctx, cnt.DockerID, container.StopOptions{
 		Signal:  "SIGTERM",
 		Timeout: lo.ToPtr(30), //nolint:mnd
@@ -132,6 +140,13 @@ func (s *Service) stopDockerContainer(
 	if err != nil {
 		return errors.WithStack(err)
 	}
+
+	_ = s.event.NotifyContainerEvent(ctx, models.ContainerEvent{
+		ID:     cnt.ID,
+		Name:   cnt.Name,
+		Time:   time.Now(),
+		Status: models.CSStopped,
+	})
 
 	return nil
 }
@@ -145,10 +160,24 @@ func (s *Service) startDockerContainer(
 		return err
 	}
 
+	_ = s.event.NotifyContainerEvent(ctx, models.ContainerEvent{
+		ID:     cnt.ID,
+		Name:   cnt.Name,
+		Time:   time.Now(),
+		Status: models.CSStarting,
+	})
+
 	err = s.docker.ContainerStart(ctx, cnt.DockerID, container.StartOptions{})
 	if err != nil {
 		return errors.WithStack(err)
 	}
+
+	_ = s.event.NotifyContainerEvent(ctx, models.ContainerEvent{
+		ID:     cnt.ID,
+		Name:   cnt.Name,
+		Time:   time.Now(),
+		Status: models.CSRunning,
+	})
 
 	return nil
 }
@@ -266,7 +295,7 @@ func (s *Service) pullDockerImage(
 
 	defer body.Close()
 
-	_, err = io.ReadAll(body)
+	_, err = io.Copy(io.Discard, body)
 	if err != nil {
 		return errors.WithStack(err)
 	}

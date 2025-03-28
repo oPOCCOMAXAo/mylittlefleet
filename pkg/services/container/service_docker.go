@@ -288,3 +288,27 @@ func (s *Service) prepareHostConfigFromInfo(
 
 	return &res
 }
+
+func (s *Service) GetContainerRuntimeStatusByName(
+	ctx context.Context,
+	name string,
+) (models.ContainerStatus, error) {
+	containerID, err := s.repo.GetContainerIDByName(ctx, name)
+	if err != nil {
+		return models.CSError, err
+	}
+
+	res, err := s.getDockerContainersRaw(ctx, structs.ContainersOptions{
+		OnlyCurrentInstallation: true,
+		InternalID:              containerID,
+	})
+	if err != nil {
+		return 0, err
+	}
+
+	if len(res) == 0 {
+		return models.CSStopped, nil
+	}
+
+	return models.CSStatic.FromDockerState(res[0].State), nil
+}

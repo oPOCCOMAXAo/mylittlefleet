@@ -9,6 +9,7 @@ import (
 
 	"github.com/docker/docker/client"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/container/repo"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/event"
 	"github.com/opoccomaxao/mylittlefleet/pkg/services/settings"
 )
 
@@ -24,6 +25,7 @@ type Service struct {
 	httpCli  *http.Client
 	docker   *client.Client
 	settings *settings.Service
+	event    *event.Service
 
 	// Unique ID for the installation. Required for the container to be able to identify itself.
 	installationID string
@@ -39,6 +41,7 @@ func NewService(
 	logger *slog.Logger,
 	docker *client.Client,
 	settings *settings.Service,
+	event *event.Service,
 ) *Service {
 	return &Service{
 		repo:   repo,
@@ -48,6 +51,7 @@ func NewService(
 		},
 		docker:   docker,
 		settings: settings,
+		event:    event,
 
 		runCtx:             context.Background(),
 		chanSyncWithDocker: make(chan struct{}, 1),

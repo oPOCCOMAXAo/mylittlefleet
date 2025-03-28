@@ -10,6 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/opoccomaxao/mylittlefleet/pkg/models"
+	"github.com/opoccomaxao/mylittlefleet/pkg/services/container"
 	"github.com/samber/lo"
 )
 
@@ -48,7 +49,7 @@ func ServerCardTable(
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(lo.CoalesceOrEmpty(config.Title, "Server"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/server.templ`, Line: 18, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/server.templ`, Line: 19, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -71,7 +72,10 @@ func ServerCardTable(
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = ContainerStatusBadge(config.Server.NginxStatus).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ContainerStatusBadge(ContainerStatusBadgeConfig{
+				Status:        config.Server.NginxStatus,
+				ContainerName: container.ContainerNameReverseProxy,
+			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -123,7 +127,7 @@ func ServerCardEdit(
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(lo.CoalesceOrEmpty(config.Title, "Server"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/server.templ`, Line: 53, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/views/server.templ`, Line: 57, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
