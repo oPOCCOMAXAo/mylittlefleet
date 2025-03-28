@@ -36,4 +36,6 @@ type FullContainerInfo struct {
 	Volumes   []*VolumeDomain
 	Ports     []*ContainerPort
 	Envs      []*ContainerEnv
+
+	DockerStatus ContainerStatus
 }
