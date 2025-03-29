@@ -48,6 +48,8 @@ templ ContainerList(
 templ ContainerShort(
 	container *models.Container,
 ) {
+	{{ strID := strconv.FormatInt(container.ID, 10) }}
+	{{ basePath := "/dashboard/containers/" + strID }}
 	<tr>
 		<td>
 			{ container.Name }
@@ -60,12 +62,12 @@ templ ContainerShort(
 		</td>
 		<td>
 			<a
-				href={ templ.URL("/dashboard/containers/" + strconv.FormatInt(container.ID, 10)) }
+				href={ templ.SafeURL(basePath) }
 				class="btn btn-dark btn-sm bi-info-square"
 				title="View"
 			></a>
 			<a
-				href={ templ.URL("/dashboard/containers/" + strconv.FormatInt(container.ID, 10) + "/edit") }
+				href={ templ.SafeURL(basePath + "/edit") }
 				class="btn btn-dark btn-sm bi-pencil-square"
 				title="Edit"
 			></a>
@@ -77,4 +79,55 @@ templ ContainerFull(
 	container *models.FullContainerInfo,
 	isEdit bool,
 ) {
+	{{ strID := strconv.FormatInt(container.Container.ID, 10) }}
+	{{ basePath := "/dashboard/containers/" + strID }}
+	<div class="card">
+		<div class="card-header">
+			{ container.Container.Name }
+			<a
+				href="/dashboard/containers"
+				class="btn btn-dark btn-sm float-start bi-arrow-left"
+				title="Back"
+			></a>
+		</div>
+		<div class="card-body"></div>
+		<div class="card-footer">
+			if isEdit {
+				<button
+					class="btn btn-dark btn-sm float-end bi-check-square"
+					title="Save"
+					hx-post={ basePath }
+				></button>
+				<a
+					href={ templ.SafeURL(basePath) }
+					class="btn btn-dark btn-sm float-end bi-x-square"
+					title="Cancel"
+				></a>
+			} else {
+				<a
+					href={ templ.SafeURL(basePath + "/edit") }
+					class="btn btn-dark btn-sm float-end bi-pencil-square"
+					title="Edit"
+				></a>
+				if container.Container.Paused {
+					<button
+						hx-post={ basePath + "/start" }
+						class="btn btn-dark btn-sm float-end bi-play"
+						title="Start"
+					></button>
+				} else {
+					<button
+						hx-post={ basePath + "/stop" }
+						class="btn btn-dark btn-sm float-end bi-pause"
+						title="Stop"
+					></button>
+					<button
+						hx-post={ basePath + "/restart" }
+						class="btn btn-dark btn-sm float-end bi-arrow-clockwise"
+						title="Restart"
+					></button>
+				}
+			}
+		</div>
+	</div>
 }
